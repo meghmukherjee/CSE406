@@ -1,0 +1,56 @@
+class Process:
+    def __init__(self, pid, at, bt):
+        self.pid = pid
+        self.at = at
+        self.bt = bt
+        self.ct = 0
+        self.tat = 0
+        self.wt = 0
+
+    def calculate_times(self, ct):
+        self.ct = ct
+        self.tat = self.ct - self.at
+        self.wt = self.tat - self.bt
+
+    def display(self):
+        print(f"{self.pid}\t{self.at}\t{self.bt}\t{self.ct}\t{self.tat}\t{self.wt}")
+
+    def waiting(self):
+        return self.wt
+
+n = int(input("Enter number of processes: "))
+processes = []
+
+for i in range(1, n + 1):
+    at = int(input(f"Process {i} Arrival Time: "))
+    bt = int(input(f"Process {i} Burst Time: "))
+    processes.append(Process(i, at, bt))
+processes.sort(key=lambda x: x.at)
+completed = 0
+current_time = 0
+is_completed = [False] * n
+
+while completed != n:
+    idx = -1
+    min_bt = float('inf')
+    for i in range(n):
+        if processes[i].at <= current_time and not is_completed[i]:
+            if processes[i].bt < min_bt:
+                min_bt = processes[i].bt
+                idx = i
+
+    if idx == -1:
+        current_time += 1
+    else:
+        current_time += processes[idx].bt
+        processes[idx].calculate_times(current_time)
+        is_completed[idx] = True
+        completed += 1
+
+
+print("\nPID\tAT\tBT\tCT\tTAT\tWT")
+for p in processes:
+    p.display()
+
+avg_wt = sum(p.waiting() for p in processes) / n
+print(f"\nAverage Waiting Time: {avg_wt:.2f}")
