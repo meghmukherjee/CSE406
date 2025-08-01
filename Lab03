@@ -1,0 +1,57 @@
+class Process:
+    def __init__(self, pid, at, bt):
+        self.pid = pid
+        self.at = at
+        self.bt = bt
+        self.rt = bt
+        self.ct = 0
+        self.tat = 0
+        self.wt = 0
+
+    def display(self):
+        print(f"{self.pid}\t{self.at}\t{self.bt}\t{self.ct}\t{self.tat}\t{self.wt}")
+
+n = int(input("Enter number of processes: "))
+processes = []
+for i in range(1, n + 1):
+    at = int(input(f"Process {i} Arrival Time: "))
+    bt = int(input(f"Process {i} Burst Time: "))
+    processes.append(Process(i, at, bt))
+
+tq = int(input("Enter time quantum: "))
+queue = []
+current_time = 0
+completed = 0
+process_count = len(processes)
+executed_processes = []
+
+while completed < process_count:
+    for p in processes:
+        if p.at <= current_time and p not in queue and p.rt > 0:
+            queue.append(p)
+
+    if not queue:
+        current_time += 1
+        continue
+
+    current_process = queue.pop(0)
+    execute_time = min(tq, current_process.rt)
+    current_time += execute_time
+    current_process.rt -= execute_time
+
+    if current_process.rt == 0:
+        current_process.ct = current_time
+        current_process.tat = current_process.ct - current_process.at
+        current_process.wt = current_process.tat - current_process.bt
+        completed += 1
+        executed_processes.append(current_process)
+    else:
+        for p in processes:
+            if p.at <= current_time and p not in queue and p.rt > 0 and p != current_process:
+                queue.append(p)
+        queue.append(current_process)
+
+print("\nPID\tAT\tBT\tCT\tTAT\tWT")
+executed_processes.sort(key=lambda x: x.pid)
+for p in executed_processes:
+    p.display()
