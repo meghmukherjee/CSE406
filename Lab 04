@@ -1,0 +1,73 @@
+class Process:
+    def __init__(self, pid, arrival_time, burst_time, priority):
+        self.pid = pid
+        self.arrival_time = arrival_time
+        self.burst_time = burst_time
+        self.priority = priority
+        self.waiting_time = 0
+        self.turnaround_time = 0
+        self.completion_time = 0
+
+class PriorityScheduler:
+    def __init__(self):
+        self.processes = []
+
+    def add_process(self, pid, arrival_time, burst_time, priority):
+        process = Process(pid, arrival_time, burst_time, priority)
+        self.processes.append(process)
+#sorting
+    def schedule(self):
+        self.processes.sort(key=lambda p: (p.priority))
+        n = len(self.processes)
+        completed = 0
+        current_time = 0
+        is_completed = [False] * n
+
+        while completed != n:
+            idx = -1
+            highest_priority = float('inf')
+            for i in range(n):
+                if (self.processes[i].arrival_time <= current_time and
+                        not is_completed[i] and
+                        self.processes[i].priority < highest_priority):
+                    highest_priority = self.processes[i].priority
+                    idx = i
+
+            if idx != -1:
+                p = self.processes[idx]
+                p.waiting_time = current_time - p.arrival_time
+                current_time += p.burst_time
+                p.completion_time = current_time
+                p.turnaround_time = p.completion_time - p.arrival_time
+                is_completed[idx] = True
+                completed += 1
+            else:
+                current_time += 1
+
+        total_wt = sum(p.waiting_time for p in self.processes)
+        total_tat = sum(p.turnaround_time for p in self.processes)
+        avg_wt = total_wt / n
+        avg_tat = total_tat / n
+        return avg_wt, avg_tat
+
+    def display(self):
+        print("\nPid\tPR\tAT\tBT\tCT\tTAT\tWT")
+        for p in sorted(self.processes, key=lambda x: x.pid):
+            print(f"{p.pid}\t{p.priority}\t{p.arrival_time}\t{p.burst_time}\t{p.completion_time}\t{p.turnaround_time}\t{p.waiting_time}")
+
+if __name__ == "__main__":
+    scheduler = PriorityScheduler()
+
+    num = int(input("Enter number of processes: "))
+
+    for i in range(num):
+        pid = f"{i+1}"
+        pr = int(input(f"Enter PR for {pid}: "))
+        at = int(input(f"Enter AT for {pid}: "))
+        bt = int(input(f"Enter BT for {pid}: "))
+        scheduler.add_process(pid, at, bt, pr)
+
+    avg_wt, avg_tat = scheduler.schedule()
+    scheduler.display()
+    print(f"\nAverage Waiting Time: {avg_wt:.2f}")
+    print(f"Average Turnaround Time: {avg_tat:.2f}")
