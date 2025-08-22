@@ -1,0 +1,28 @@
+class FCFS_Scheduling:
+    def __init__(self, requests, head_start):
+        self.head_start = head_start
+        self.request = [req for req in requests if req != self.head_start]
+        self.total_seek_operations = 0
+        self.seek_sequence = [self.head_start]
+
+    def run(self):
+        current_position = self.head_start
+        for req in self.request:
+          if req == head_start:
+            self
+          else
+            movement = abs(req - current_position)
+            self.total_seek_operations += movement
+            self.seek_sequence.append(req)
+            current_position = req
+
+    def display_result(self):
+        print("Total Seek Operations:", self.total_seek_operations)
+        print("Seek Sequence:", self.seek_sequence)
+
+if __name__ == "__main__":
+    requests = list(map(int, input("Enter the request sequence separated by spaces: ").split()))
+    head_start = int(input("Enter the initial head position: "))
+    fcfs = FCFS_Scheduling(requests, head_start)
+    fcfs.run()
+    fcfs.display_result()
