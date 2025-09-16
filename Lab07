@@ -8,9 +8,9 @@ def scan_disk(requests, head, direction):
     right = [i for i in requests if i > head]
 
     if direction == "left":
-        path = list(reversed(left)) + [0] + right
+        path = list(reversed(left)) + right
     else:  
-        path = right + [max(requests)] + list(reversed(left))
+        path = right + list(reversed(left))
 
     for i in path:
         seek += abs(current - i)
@@ -18,8 +18,6 @@ def scan_disk(requests, head, direction):
         current = i
 
     return seek, seq
-
-
 
 n = int(input("Enter number of requests: "))
 requests = list(map(int, input("Enter request sequence: ").split()))
@@ -30,5 +28,3 @@ time, seq = scan_disk(requests, head, direction)
 
 print("\nSeek Sequence:", [head] + seq)
 print("Total Seek Time:", time)
-
-
