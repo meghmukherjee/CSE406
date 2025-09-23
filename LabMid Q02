@@ -1,0 +1,20 @@
+def sstf(request,head):
+  total_seek=0
+  seek_seq=[head]
+  pending=request[:]
+  current_pos=head
+
+  while pending:
+    next_req=min(pending,key=lambda r: abs(r-current_pos))
+    movement = abs(next_req-current_pos)
+    total_seek+=movement
+    seek_seq.append(next_req)
+    pending.remove(next_req)
+  print ("Total Seek Operations: ", total_seek)
+  print("Seek Sequence",seek_seq)
+
+if __name__=="__main__":
+  request= list(map(int,input("Enter the request sequence: ").split()))
+  head=int(input("Enter the initial head position: "))
+sstf(request,head)
+
