@@ -1,0 +1,22 @@
+def fifo_page(frames, pages):
+    page_faults =0
+    frames_list = []
+
+    print("\npage\tFame\t\tStatus")
+    for page in pages:
+        if page not in frames_list:
+            page_faults += 1
+            status= "Miss"
+            if len(frames_list) < frames:
+                frames_list.append(page)
+            else:
+                frames_list.pop(0)
+                frames_list.append(page)
+        else:
+          status= "Hit"
+        print(f"{page}\t{frames_list}\t\t{status}")
+    return page_faults
+
+frames = int(input("Enter the number of frames: "))
+pages = list(map(int, input("Enter the page reference string: ").split()))
+page_faults = fifo_page(frames, pages)
